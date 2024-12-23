@@ -3,15 +3,16 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"myApp/config"
 	"net/http"
 	"strconv"
 	"time"
 )
 
 func NextDate(now time.Time, repeat string, date string) (string, error) {
-	now, _ = time.Parse("20060102", now.Format("20060102"))
+	now, _ = time.Parse(config.TimeFormat, now.Format(config.TimeFormat))
 	ruleType := repeat[0:1]
-	dateTime, err := time.Parse("20060102", date)
+	dateTime, err := time.Parse(config.TimeFormat, date)
 	if err != nil {
 		return "", err
 	}
@@ -29,13 +30,13 @@ func NextDate(now time.Time, repeat string, date string) (string, error) {
 		for now.After(nextDate) {
 			nextDate = nextDate.AddDate(0, 0, days)
 		}
-		return nextDate.Format("20060102"), nil
+		return nextDate.Format(config.TimeFormat), nil
 	case "y":
 		nextDate := dateTime.AddDate(1, 0, 0)
 		for now.After(nextDate) {
 			nextDate = nextDate.AddDate(1, 0, 0)
 		}
-		return nextDate.Format("20060102"), nil
+		return nextDate.Format(config.TimeFormat), nil
 	}
 	return date, nil
 }

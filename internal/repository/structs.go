@@ -1,4 +1,4 @@
-package repo
+package repository
 
 type Task struct {
 	Id      string `json:"id"`

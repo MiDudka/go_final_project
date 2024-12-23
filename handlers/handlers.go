@@ -4,18 +4,17 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"myApp/internal/repository"
 	"net/http"
 	"regexp"
 	"strconv"
 	"time"
-
-	repo "myApp/internal/repository"
 )
 
-func CreateTaskHandler(db *repo.Repository) http.HandlerFunc {
+func CreateTaskHandler(db *repository.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		var data createRequest
+		var data Task
 		var respDataId createResponseId
 		err := json.NewDecoder(r.Body).Decode(&data)
 		if err != nil {
@@ -80,7 +79,7 @@ func CreateTaskHandler(db *repo.Repository) http.HandlerFunc {
 	}
 }
 
-func ListTaskHandler(db *repo.Repository) http.HandlerFunc {
+func ListTaskHandler(db *repository.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
@@ -100,7 +99,7 @@ func ListTaskHandler(db *repo.Repository) http.HandlerFunc {
 	}
 }
 
-func ReadTaskHandler(db *repo.Repository) http.HandlerFunc {
+func ReadTaskHandler(db *repository.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		id := r.URL.Query().Get("id")
@@ -129,7 +128,7 @@ func ReadTaskHandler(db *repo.Repository) http.HandlerFunc {
 	}
 }
 
-func UpdateTaskHandler(db *repo.Repository) http.HandlerFunc {
+func UpdateTaskHandler(db *repository.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		var data task
@@ -179,7 +178,7 @@ func UpdateTaskHandler(db *repo.Repository) http.HandlerFunc {
 	}
 
 }
-func DoneTaskHandler(db *repo.Repository) http.HandlerFunc {
+func DoneTaskHandler(db *repository.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := r.URL.Query().Get("id")
 		if id == "" {
@@ -210,7 +209,7 @@ func DoneTaskHandler(db *repo.Repository) http.HandlerFunc {
 				SendBadRequest(w, err)
 				return
 			}
-			err = db.UpdateDate(newDate, task.Id)
+			_, err = db.UpdateTask(newDate, task.Title, task.Comment, task.Repeat, task.Id)
 			if err != nil {
 				SendBadRequest(w, err)
 				return
@@ -226,7 +225,7 @@ func DoneTaskHandler(db *repo.Repository) http.HandlerFunc {
 	}
 }
 
-func DeleteTaskHandler(db *repo.Repository) http.HandlerFunc {
+func DeleteTaskHandler(db *repository.Repository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		id := r.URL.Query().Get("id")

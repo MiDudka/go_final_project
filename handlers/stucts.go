@@ -1,8 +1,8 @@
 package handlers
 
-import repo "myApp/internal/repository"
+import repository "myApp/internal/repository"
 
-type createRequest struct {
+type Task struct {
 	Date    string `json:"date"`
 	Title   string `json:"title"`
 	Comment string `json:"comment"`
@@ -22,7 +22,7 @@ type task struct {
 }
 
 type listResponse struct {
-	Tasks []repo.Task `json:"tasks"`
+	Tasks []repository.Task `json:"tasks"`
 }
 
 type ResponseError struct {

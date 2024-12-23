@@ -1,4 +1,4 @@
-package repo
+package repository
 
 import (
 	"database/sql"
@@ -21,7 +21,7 @@ func New(conf *config.Config) (*Repository, error) {
 	if err != nil {
 		panic(err)
 	}
-	repo := Repository{db: db}
+	repository := Repository{db: db}
 	var install bool
 	if _, err := os.Stat(conf.Dbfile); err != nil {
 		install = true
@@ -48,7 +48,7 @@ func New(conf *config.Config) (*Repository, error) {
 			return nil, err
 		}
 	}
-	return &repo, nil
+	return &repository, nil
 }
 
 func (r *Repository) InsertTask(date, title, comment, repeat string) (int, error) {
@@ -63,7 +63,7 @@ func (r *Repository) InsertTask(date, title, comment, repeat string) (int, error
 
 func (r *Repository) GetListTask() ([]Task, error) {
 	tasks := []Task{}
-	query := "SELECT * FROM scheduler ORDER BY date"
+	query := "SELECT id, date, title, comment, repeat FROM scheduler ORDER BY date"
 	rows, err := r.db.Query(query)
 	if err != nil {
 		return nil, err
